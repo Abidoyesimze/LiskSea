@@ -1,0 +1,4 @@
+node_modules/@metamask/sdk-communication-layer/node_modules/bufferutil
+node_modules/secp256k1
+node_modules/bigint-buffer
+packages/hardhat/node_modules/secp256k1

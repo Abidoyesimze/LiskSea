@@ -1,4 +1,14 @@
-node_modules/@metamask/sdk-communication-layer/node_modules/bufferutil
+# Native modules that cause build issues
 node_modules/secp256k1
+node_modules/bufferutil
 node_modules/bigint-buffer
+node_modules/@metamask/sdk-communication-layer/node_modules/bufferutil
 packages/hardhat/node_modules/secp256k1
+packages/nextjs/node_modules/secp256k1
+packages/nextjs/node_modules/bufferutil
+packages/nextjs/node_modules/bigint-buffer
+
+# Build artifacts
+.next
+node_modules/.cache
+packages/*/node_modules/.cache

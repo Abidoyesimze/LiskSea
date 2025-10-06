@@ -1,5 +1,10 @@
 {
-  "installCommand": "yarn install --ignore-optional",
+  "installCommand": "yarn install --ignore-optional --ignore-engines",
   "buildCommand": "yarn build",
-  "outputDirectory": ".next"
+  "outputDirectory": ".next",
+  "functions": {
+    "app/**/*.tsx": {
+      "runtime": "nodejs18.x"
+    }
+  }
 }

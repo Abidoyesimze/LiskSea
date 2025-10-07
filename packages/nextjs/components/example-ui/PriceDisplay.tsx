@@ -25,7 +25,7 @@ export const PriceDisplay = ({ symbol }: PriceDisplayProps) => {
       return;
     }
 
-    if (typeof window === "undefined" || !window.ethereum) {
+    if (typeof window === "undefined" || !(window as any).ethereum) {
       setError("Please connect your wallet to view prices");
       setIsLoading(false);
       return;
@@ -36,10 +36,10 @@ export const PriceDisplay = ({ symbol }: PriceDisplayProps) => {
       setError("");
 
       // Create ethers provider from window.ethereum
-      const provider = new ethers.providers.Web3Provider(window.ethereum as any);
+      const provider = new ethers.providers.Web3Provider((window as any).ethereum);
 
       // Create ethers contract instance
-      const contract = new ethers.Contract(deployedContractData.address, deployedContractData.abi, provider);
+      const contract = new ethers.Contract(deployedContractData.address, deployedContractData.abi, provider) as any;
 
       // Wrap contract with RedStone data using correct API
       const wrappedContract = WrapperBuilder.wrap(contract).usingDataService({

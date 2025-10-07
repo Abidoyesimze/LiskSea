@@ -1,10 +1,10 @@
-import { WriteContractResult, getPublicClient } from "@wagmi/core";
+import { getPublicClient } from "@wagmi/core";
 import { Hash, SendTransactionParameters, TransactionReceipt, WalletClient } from "viem";
 import { useWalletClient } from "wagmi";
 import { getBlockExplorerTxLink, getParsedError, notification } from "~~/utils/scaffold-eth";
 
 type TransactionFunc = (
-  tx: (() => Promise<WriteContractResult>) | (() => Promise<Hash>) | SendTransactionParameters,
+  tx: (() => Promise<Hash>) | (() => Promise<{ hash: Hash }>) | SendTransactionParameters,
   options?: {
     onBlockConfirmation?: (txnReceipt: TransactionReceipt) => void;
     blockConfirmations?: number;
@@ -47,7 +47,7 @@ export const useTransactor = (_walletClient?: WalletClient): TransactionFunc => 
     }
 
     let notificationId = null;
-    let transactionHash: Awaited<WriteContractResult>["hash"] | undefined = undefined;
+    let transactionHash: Hash | undefined = undefined;
     try {
       const network = await walletClient.getChainId();
       // Get full transaction from public client
@@ -68,6 +68,10 @@ export const useTransactor = (_walletClient?: WalletClient): TransactionFunc => 
         throw new Error("Incorrect transaction passed to transactor");
       }
       notification.remove(notificationId);
+
+      if (!transactionHash) {
+        throw new Error("Transaction hash not found");
+      }
 
       const blockExplorerTxURL = network ? getBlockExplorerTxLink(network, transactionHash) : "";
 

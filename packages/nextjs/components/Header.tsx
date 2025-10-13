@@ -7,9 +7,10 @@ import { Logo } from "./Logo";
 import {
   Bars3Icon,
   BugAntIcon,
+  ClipboardDocumentListIcon,
   CurrencyDollarIcon,
-  DocumentTextIcon,
   HomeIcon,
+  ShoppingCartIcon,
   SparklesIcon,
 } from "@heroicons/react/24/outline";
 import {
@@ -46,7 +47,12 @@ export const menuLinks: HeaderMenuLink[] = [
   {
     label: "Events",
     href: "/events",
-    icon: <DocumentTextIcon className="h-4 w-4" />,
+    icon: <ClipboardDocumentListIcon className="h-4 w-4" />,
+  },
+  {
+    label: "Marketplace",
+    href: "/marketplace",
+    icon: <ShoppingCartIcon className="h-4 w-4" />,
   },
   {
     label: "Debug Contracts",

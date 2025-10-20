@@ -21,6 +21,7 @@ const Events: NextPage = () => {
   });
 
   // Get NFT transfer events
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data: nftEvents, isLoading: nftLoading } = useScaffoldEventHistory({
     contractName: "MyNFT",
     eventName: "Transfer",

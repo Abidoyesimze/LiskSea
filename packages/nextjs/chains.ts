@@ -1,5 +1,5 @@
-import { defineChain } from "viem";
 import { defineChain as defineThirdwebChain } from "thirdweb";
+import { defineChain } from "viem";
 
 export const liskSepolia = /*#__PURE__*/ defineChain({
   id: 4202,

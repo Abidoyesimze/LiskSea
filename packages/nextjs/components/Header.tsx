@@ -5,8 +5,10 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Logo } from "./Logo";
 import {
+  ArrowsRightLeftIcon,
   Bars3Icon,
   BugAntIcon,
+  ChevronDownIcon,
   ClipboardDocumentListIcon,
   CurrencyDollarIcon,
   HomeIcon,
@@ -28,12 +30,27 @@ type HeaderMenuLink = {
   icon?: React.ReactNode;
 };
 
+// Primary navigation items (always visible)
 export const menuLinks: HeaderMenuLink[] = [
   {
     label: "Home",
     href: "/",
     icon: <HomeIcon className="h-4 w-4" />,
   },
+  {
+    label: "DEX",
+    href: "/dex",
+    icon: <ArrowsRightLeftIcon className="h-4 w-4" />,
+  },
+  {
+    label: "Marketplace",
+    href: "/marketplace",
+    icon: <ShoppingCartIcon className="h-4 w-4" />,
+  },
+];
+
+// Secondary navigation items (in dropdown or less prominent)
+export const secondaryMenuLinks: HeaderMenuLink[] = [
   {
     label: "Oracle",
     href: "/oracle",
@@ -50,11 +67,6 @@ export const menuLinks: HeaderMenuLink[] = [
     icon: <ClipboardDocumentListIcon className="h-4 w-4" />,
   },
   {
-    label: "Marketplace",
-    href: "/marketplace",
-    icon: <ShoppingCartIcon className="h-4 w-4" />,
-  },
-  {
     label: "Debug Contracts",
     href: "/debug",
     icon: <BugAntIcon className="h-4 w-4" />,
@@ -66,6 +78,7 @@ export const HeaderMenuLinks = () => {
 
   return (
     <>
+      {/* Primary navigation items */}
       {menuLinks.map(({ label, href, icon }) => {
         const isActive = pathname === href;
         return (
@@ -84,6 +97,40 @@ export const HeaderMenuLinks = () => {
           </li>
         );
       })}
+
+      {/* More dropdown for secondary items */}
+      <li className="dropdown dropdown-hover">
+        <label
+          tabIndex={0}
+          className={cn(
+            "flex items-center justify-between px-4 py-2 text-sm transition-colors duration-200 cursor-pointer",
+            secondaryMenuLinks.some(link => pathname === link.href) ? "bg-base-100 primary-content" : "text-slate-400",
+          )}
+        >
+          <span>More</span>
+          <ChevronDownIcon className="h-4 w-4" />
+        </label>
+        <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 z-50">
+          {secondaryMenuLinks.map(({ label, href, icon }) => {
+            const isActive = pathname === href;
+            return (
+              <li key={href}>
+                <Link
+                  href={href}
+                  passHref
+                  className={cn(
+                    "flex items-center gap-2 px-3 py-2 text-sm transition-colors duration-200",
+                    isActive ? "bg-base-200 primary-content" : "text-slate-400 hover:bg-base-200",
+                  )}
+                >
+                  {icon}
+                  {label}
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </li>
     </>
   );
 };
@@ -94,6 +141,7 @@ export const HeaderMenuLinks = () => {
 export const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const burgerMenuRef = useRef<HTMLDivElement>(null);
+  const pathname = usePathname();
   useOutsideClick(
     burgerMenuRef,
     useCallback(() => setIsDrawerOpen(false), []),
@@ -120,7 +168,45 @@ export const Header = () => {
                 setIsDrawerOpen(false);
               }}
             >
-              <HeaderMenuLinks />
+              {/* Primary navigation items */}
+              {menuLinks.map(({ label, href, icon }) => {
+                const isActive = pathname === href;
+                return (
+                  <li key={href}>
+                    <Link
+                      href={href}
+                      passHref
+                      className={cn(
+                        "relative flex items-center justify-between px-4 py-2 text-sm transition-colors duration-200",
+                        isActive ? "bg-base-100 primary-content" : "text-slate-400",
+                      )}
+                    >
+                      {icon}
+                      {label}
+                    </Link>
+                  </li>
+                );
+              })}
+
+              {/* Secondary navigation items */}
+              {secondaryMenuLinks.map(({ label, href, icon }) => {
+                const isActive = pathname === href;
+                return (
+                  <li key={href}>
+                    <Link
+                      href={href}
+                      passHref
+                      className={cn(
+                        "relative flex items-center justify-between px-4 py-2 text-sm transition-colors duration-200",
+                        isActive ? "bg-base-100 primary-content" : "text-slate-400",
+                      )}
+                    >
+                      {icon}
+                      {label}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </div>

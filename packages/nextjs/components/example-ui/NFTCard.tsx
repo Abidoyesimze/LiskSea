@@ -1,9 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { WrapperBuilder } from "@redstone-finance/evm-connector";
-import { getSignersForDataServiceId } from "@redstone-finance/sdk";
-import { ethers } from "ethers";
 import { formatEther, parseEther } from "viem";
 import { useAccount } from "wagmi";
 import { Address } from "~~/components/scaffold-eth";
@@ -20,10 +17,10 @@ export const NFTCard = ({ tokenId }: NFTCardProps) => {
   const [listPrice, setListPrice] = useState("");
   const [isApproved, setIsApproved] = useState(false);
   const [isApproving, setIsApproving] = useState(false);
-  const [ethPriceUSD, setEthPriceUSD] = useState<number>(0);
+  const [ethPriceUSD] = useState<number>(0);
 
-  // Get PriceFeed contract info
-  const { data: priceFeedContract } = useDeployedContractInfo("PriceFeed");
+  // Get PriceFeed contract info (not available in current deployment)
+  // const { data: priceFeedContract } = useDeployedContractInfo("PriceFeed");
 
   // Get NFT owner
   const { data: owner } = useScaffoldContractRead({
@@ -39,7 +36,7 @@ export const NFTCard = ({ tokenId }: NFTCardProps) => {
     args: [BigInt(tokenId)],
   });
 
-  // Get marketplace contract info (we need its address for approval)
+  // Get marketplace contract info
   const { data: marketplaceContract } = useDeployedContractInfo("NFTMarketplace");
   const marketplaceAddress = marketplaceContract?.address;
 
@@ -56,37 +53,37 @@ export const NFTCard = ({ tokenId }: NFTCardProps) => {
     args: [owner as `0x${string}`, marketplaceAddress as `0x${string}`],
   });
 
-  // Fetch price on mount and every 30 seconds
-  useEffect(() => {
-    const fetchEthPrice = async () => {
-      if (!priceFeedContract || typeof window === "undefined" || !(window as any).ethereum) {
-        return;
-      }
+  // Fetch price on mount and every 30 seconds (PriceFeed not available in current deployment)
+  // useEffect(() => {
+  //   const fetchEthPrice = async () => {
+  //     if (!priceFeedContract || typeof window === "undefined" || !(window as any).ethereum) {
+  //       return;
+  //     }
 
-      try {
-        // Create ethers provider and contract
-        const provider = new ethers.providers.Web3Provider((window as any).ethereum);
-        const contract = new ethers.Contract(priceFeedContract.address, priceFeedContract.abi, provider);
+  //     try {
+  //       // Create ethers provider and contract
+  //       const provider = new ethers.providers.Web3Provider((window as any).ethereum);
+  //       const contract = new ethers.Contract(priceFeedContract.address, priceFeedContract.abi, provider);
 
-        // Wrap contract with RedStone data
-        const wrappedContract = WrapperBuilder.wrap(contract).usingDataService({
-          dataPackagesIds: ["ETH"],
-          authorizedSigners: getSignersForDataServiceId("redstone-main-demo"),
-        });
+  //       // Wrap contract with RedStone data
+  //       const wrappedContract = WrapperBuilder.wrap(contract).usingDataService({
+  //         dataPackagesIds: ["ETH"],
+  //         authorizedSigners: getSignersForDataServiceId("redstone-main-demo"),
+  //       });
 
-        // Get ETH price
-        const priceData = await wrappedContract.getEthPrice();
-        const formattedPrice = Number(priceData) / 1e8; // Convert from 8 decimals
-        setEthPriceUSD(formattedPrice);
-      } catch (error) {
-        console.error("Error fetching ETH price:", error);
-      }
-    };
+  //       // Get ETH price
+  //       const priceData = await wrappedContract.getEthPrice();
+  //       const formattedPrice = Number(priceData) / 1e8; // Convert from 8 decimals
+  //       setEthPriceUSD(formattedPrice);
+  //     } catch (error) {
+  //       console.error("Error fetching ETH price:", error);
+  //     }
+  //   };
 
-    fetchEthPrice();
-    const interval = setInterval(fetchEthPrice, 30000);
-    return () => clearInterval(interval);
-  }, [priceFeedContract]);
+  //   fetchEthPrice();
+  //   const interval = setInterval(fetchEthPrice, 30000);
+  //   return () => clearInterval(interval);
+  // }, [priceFeedContract]);
 
   // Update approval status
   useEffect(() => {

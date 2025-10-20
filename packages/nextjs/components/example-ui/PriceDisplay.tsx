@@ -4,7 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import { WrapperBuilder } from "@redstone-finance/evm-connector";
 import { getSignersForDataServiceId } from "@redstone-finance/sdk";
 import { ethers } from "ethers";
-import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
+
+// import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 
 interface PriceDisplayProps {
   symbol: "ETH" | "BTC";
@@ -16,7 +17,8 @@ export const PriceDisplay = ({ symbol }: PriceDisplayProps) => {
   const [error, setError] = useState<string>("");
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date());
 
-  const { data: deployedContractData } = useDeployedContractInfo("PriceFeed");
+  // const { data: deployedContractData } = useDeployedContractInfo("PriceFeed");
+  const deployedContractData: { address: string; abi: any[] } | null = null; // PriceFeed contract not deployed
 
   const fetchPrice = useCallback(async () => {
     if (!deployedContractData) {
@@ -39,7 +41,11 @@ export const PriceDisplay = ({ symbol }: PriceDisplayProps) => {
       const provider = new ethers.providers.Web3Provider((window as any).ethereum);
 
       // Create ethers contract instance
-      const contract = new ethers.Contract(deployedContractData.address, deployedContractData.abi, provider) as any;
+      const contract = new ethers.Contract(
+        (deployedContractData as any).address,
+        (deployedContractData as any).abi,
+        provider,
+      ) as any;
 
       // Wrap contract with RedStone data using correct API
       const wrappedContract = WrapperBuilder.wrap(contract).usingDataService({
